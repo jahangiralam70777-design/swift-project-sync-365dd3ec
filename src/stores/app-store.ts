@@ -102,7 +102,7 @@ function toAuthUser(session: Session): NonNullable<UserSession> {
   const email = session.user.email ?? "";
   return {
     id: session.user.id,
-    name: (session.user.user_metadata?.display_name as string) ?? email.split("@")[0] ?? "Learner",
+    name: (session.user.user_metadata?.display_name as string) ?? "Learner",
     email,
     role: "student",
   };
