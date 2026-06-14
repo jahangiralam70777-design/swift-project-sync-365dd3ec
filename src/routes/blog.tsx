@@ -25,10 +25,15 @@ export const Route = createFileRoute("/blog")({
     ],
     links: [{ rel: "canonical", href: "/blog" }],
   }),
-  errorComponent: ({ error }) => (
-    <div className="p-10 text-center text-red-500">Failed to load blog: {error.message}</div>
+  errorComponent: ({ error, reset }) => <DefaultErrorFallback error={error} reset={reset} />,
+  notFoundComponent: () => (
+    <div className="p-10 text-center">
+      <h2 className="text-lg font-semibold text-foreground">No blog posts yet</h2>
+      <p className="mt-2 text-sm text-muted-foreground">
+        We haven't published anything here yet. Check back soon for new articles.
+      </p>
+    </div>
   ),
-  notFoundComponent: () => <div className="p-10">Blog not found</div>,
 });
 
 type SortMode = "latest" | "popular";
