@@ -1127,10 +1127,10 @@ export function UserManagementFlow() {
                         <td className="px-3 py-3 text-muted-foreground whitespace-nowrap">
                           {fmtDateTime(u.last_login_at)}
                         </td>
-                        <td className="px-3 py-3 text-muted-foreground">
+                        <td className="px-3 py-3 text-muted-foreground whitespace-nowrap">
                           {new Date(u.created_at).toLocaleDateString()}
                         </td>
-                        <td className="px-3 py-3">
+                        <td className="px-3 py-3 whitespace-nowrap">
                           <div className="flex items-center gap-1">
                             <IconBtn title="View details" onClick={() => setViewing(u)}>
                               <Eye className="h-3.5 w-3.5" />
