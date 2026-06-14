@@ -1154,6 +1154,31 @@ export function UserManagementFlow() {
                               </IconBtn>
                             )}
                             <IconBtn
+                              title={isAdmin ? "Remove admin role" : "Make admin"}
+                              disabled={roleM.isPending}
+                              onClick={() => {
+                                void (async () => {
+                                  if (
+                                    await confirmDialog({
+                                      title: isAdmin
+                                        ? `Remove admin from ${u.display_name}?`
+                                        : `Promote ${u.display_name} to admin?`,
+                                      description: isAdmin
+                                        ? "They will lose access to all admin features."
+                                        : "They will get full admin privileges across the platform.",
+                                      confirmLabel: isAdmin ? "Remove admin" : "Make admin",
+                                      variant: isAdmin ? "destructive" : "default",
+                                    })
+                                  )
+                                    roleM.mutate({ id: u.id, role: "admin", grant: !isAdmin });
+                                })();
+                              }}
+                            >
+                              <Crown
+                                className={`h-3.5 w-3.5 ${isAdmin ? "text-amber-400" : "text-muted-foreground"}`}
+                              />
+                            </IconBtn>
+                            <IconBtn
                               title="Send password reset email"
                               disabled={resetPwM.isPending || !u.email}
                               onClick={() => {
