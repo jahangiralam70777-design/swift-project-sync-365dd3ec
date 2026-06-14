@@ -226,7 +226,7 @@ export function DashContent() {
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 to="/mcq-practice"
-                className="group inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-foreground shadow-card-soft transition-all hover:scale-[1.03] hover:shadow-glow"
+                className="group inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-black shadow-card-soft transition-all hover:scale-[1.03] hover:shadow-glow"
               >
                 <Zap className="h-4 w-4 text-[var(--neon-purple)]" />
                 Start Practice
