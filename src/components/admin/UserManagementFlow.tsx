@@ -186,6 +186,7 @@ export function UserManagementFlow() {
   const verifyFn = useServerFn(adminVerifyUser);
   const resetPwFn = useServerFn(adminSendPasswordReset);
   const userSessionsFn = useServerFn(adminUserSessions);
+  const roleFn = useServerFn(adminSetUserRole);
   const [showCreate, setShowCreate] = useState(false);
 
   const [search, setSearch] = useState("");
@@ -451,6 +452,16 @@ export function UserManagementFlow() {
     mutationFn: (id: string) =>
       resetPwFn({ data: { id } }),
     onSuccess: (r) => toast.success(`Password reset email sent${r?.email ? ` to ${r.email}` : ""}`),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const roleM = useMutation({
+    mutationFn: (v: { id: string; role: "admin" | "moderator" | "student"; grant: boolean }) =>
+      roleFn({ data: v }),
+    onSuccess: (_r, v) => {
+      toast.success(v.grant ? `${v.role} role granted` : `${v.role} role removed`);
+      invalidate();
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -998,7 +1009,7 @@ export function UserManagementFlow() {
                 No users match the current filters.
               </div>
             ) : (
-              <table className="w-full text-xs">
+              <table className="w-full min-w-[1180px] text-xs">
                 <thead className="bg-background/30 text-muted-foreground">
                   <tr className="text-left">
                     <th className="px-3 py-2 w-9">
@@ -1088,26 +1099,26 @@ export function UserManagementFlow() {
                             )}
                           </div>
                         </td>
-                        <td className="px-3 py-3">
+                        <td className="px-3 py-3 align-middle whitespace-nowrap">
                           <div className="flex flex-wrap gap-1">
                             {(u.roleDisplays ?? u.roles).length === 0 && (
-                              <span className="text-[10px] text-muted-foreground">Student</span>
+                              <Badge variant="outline" className="rounded-full text-[10px]">Student</Badge>
                             )}
                             {(u.roleDisplays ?? u.roles).map((d, i) => (
                               <Badge
                                 key={i}
                                 variant="outline"
-                                className="rounded-full text-[10px] capitalize"
+                                className="rounded-full text-[10px] capitalize whitespace-nowrap"
                               >
                                 {d}
                               </Badge>
                             ))}
                           </div>
                         </td>
-                        <td className="px-3 py-3 text-muted-foreground capitalize">{u.level}</td>
-                        <td className="px-3 py-3">
+                        <td className="px-3 py-3 text-muted-foreground capitalize whitespace-nowrap align-middle">{u.level || "—"}</td>
+                        <td className="px-3 py-3 align-middle whitespace-nowrap">
                           <span
-                            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] capitalize ${STATUS_TONE[displayStatus]}`}
+                            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] capitalize whitespace-nowrap ${STATUS_TONE[displayStatus]}`}
                           >
                             <CircleDot className="mr-1 h-2 w-2" />
                             {displayStatus}
@@ -1116,10 +1127,10 @@ export function UserManagementFlow() {
                         <td className="px-3 py-3 text-muted-foreground whitespace-nowrap">
                           {fmtDateTime(u.last_login_at)}
                         </td>
-                        <td className="px-3 py-3 text-muted-foreground">
+                        <td className="px-3 py-3 text-muted-foreground whitespace-nowrap">
                           {new Date(u.created_at).toLocaleDateString()}
                         </td>
-                        <td className="px-3 py-3">
+                        <td className="px-3 py-3 whitespace-nowrap">
                           <div className="flex items-center gap-1">
                             <IconBtn title="View details" onClick={() => setViewing(u)}>
                               <Eye className="h-3.5 w-3.5" />
@@ -1142,6 +1153,31 @@ export function UserManagementFlow() {
                                 <BadgeCheck className="h-3.5 w-3.5 text-emerald-400" />
                               </IconBtn>
                             )}
+                            <IconBtn
+                              title={isAdmin ? "Remove admin role" : "Make admin"}
+                              disabled={roleM.isPending}
+                              onClick={() => {
+                                void (async () => {
+                                  if (
+                                    await confirmDialog({
+                                      title: isAdmin
+                                        ? `Remove admin from ${u.display_name}?`
+                                        : `Promote ${u.display_name} to admin?`,
+                                      description: isAdmin
+                                        ? "They will lose access to all admin features."
+                                        : "They will get full admin privileges across the platform.",
+                                      confirmLabel: isAdmin ? "Remove admin" : "Make admin",
+                                      variant: isAdmin ? "destructive" : "default",
+                                    })
+                                  )
+                                    roleM.mutate({ id: u.id, role: "admin", grant: !isAdmin });
+                                })();
+                              }}
+                            >
+                              <Crown
+                                className={`h-3.5 w-3.5 ${isAdmin ? "text-amber-400" : "text-muted-foreground"}`}
+                              />
+                            </IconBtn>
                             <IconBtn
                               title="Send password reset email"
                               disabled={resetPwM.isPending || !u.email}
