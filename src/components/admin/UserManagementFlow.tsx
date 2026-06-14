@@ -1009,7 +1009,7 @@ export function UserManagementFlow() {
                 No users match the current filters.
               </div>
             ) : (
-              <table className="w-full text-xs">
+              <table className="w-full min-w-[1180px] text-xs">
                 <thead className="bg-background/30 text-muted-foreground">
                   <tr className="text-left">
                     <th className="px-3 py-2 w-9">
