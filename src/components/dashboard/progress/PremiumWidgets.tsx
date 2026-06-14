@@ -716,13 +716,9 @@ const PLAN_ENABLED_KEY = "dp-study-plan-enabled";
 const PLAN_COLLAPSED_KEY = "dp-study-plan-collapsed";
 
 function defaultPlan(): PlanTask[] {
-  return [
-    { id: "t1", title: "MCQ Practice — Financial Accounting", tag: "30 MCQs", done: false },
-    { id: "t2", title: "Quiz — Cost Accounting", tag: "15 Questions", done: false },
-    { id: "t3", title: "Read Notes — Taxation", tag: "Chapter 3", done: false },
-    { id: "t4", title: "Mock Test — Full Syllabus", tag: "Not Started", done: false },
-    { id: "t5", title: "Review Wrong Questions", tag: "Not Started", done: false },
-  ];
+  // No fabricated tasks — users add their own and we persist to localStorage.
+  // Empty state below prompts them to start.
+  return [];
 }
 
 function useLocalStorage<T>(key: string, initial: T): [T, (v: T | ((prev: T) => T)) => void] {
