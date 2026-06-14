@@ -58,6 +58,28 @@ type LevelChoice = Omit<LevelRow, "icon"> & {
 
 const stepLabels = ["Level", "Subject", "Chapter", "Quiz", "Play"];
 
+/** Strip legacy "[Auto] " prefix and prefer chapter name from joined row. */
+function displayQuizTitle(qz: {
+  title?: string | null;
+  chapters?: { name?: string | null } | null;
+} | null | undefined): string {
+  if (!qz) return "Unnamed Chapter";
+  const chapter = qz.chapters?.name?.trim();
+  if (chapter) return chapter;
+  const t = (qz.title ?? "").replace(/^\s*\[Auto\]\s*/i, "").trim();
+  return t || "Unnamed Chapter";
+}
+
+/** Replace any "Auto-generated quiz from ..." description with a clean subtitle. */
+function displayQuizSubtitle(qz: {
+  description?: string | null;
+  chapters?: { name?: string | null } | null;
+} | null | undefined): string {
+  const d = (qz?.description ?? "").trim();
+  if (d && !/auto[-\s]?generated/i.test(d)) return d;
+  return "Chapter Quiz";
+}
+
 type QuizQ = {
   position: number;
   id: string;
@@ -306,7 +328,7 @@ export function QuizFlow() {
       best: Math.max(prev.best, a.score ?? 0),
     });
   }
-  const quizTitleById = new Map<string, string>(allQuizzes.map((q) => [q.id, q.title]));
+  const quizTitleById = new Map<string, string>(allQuizzes.map((q) => [q.id, displayQuizTitle(q as never)]));
   const recentAttempts = (attemptsQ.data ?? []).slice(0, 5);
 
   return (
@@ -527,9 +549,9 @@ export function QuizFlow() {
                           )}
                         </div>
                       </div>
-                      <h3 className="font-display mt-4 text-lg font-bold">{qz.title}</h3>
+                      <h3 className="font-display mt-4 text-lg font-bold">{displayQuizTitle(qz as never)}</h3>
                       <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                        {qz.description ?? "Tap to start"}
+                        {displayQuizSubtitle(qz as never)}
                       </p>
                       <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
                         <span>
@@ -597,7 +619,7 @@ export function QuizFlow() {
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
                     {level?.t}
                   </p>
-                  <h3 className="font-display text-lg font-bold">{meta?.title ?? "Loading…"}</h3>
+                  <h3 className="font-display text-lg font-bold">{meta ? displayQuizTitle(meta as never) : "Loading…"}</h3>
                 </div>
                 <div className="flex items-center gap-2">
                   <div
