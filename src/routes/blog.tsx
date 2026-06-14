@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useBlogList, useBlogCategories, useBlogTrending } from "@/hooks/queries/use-blog";
 import { Navbar } from "@/components/landing/Navbar";
+import { DefaultErrorFallback } from "@/components/route-fallbacks";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/blog")({
