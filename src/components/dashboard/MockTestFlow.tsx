@@ -69,6 +69,20 @@ function cap(s: string) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
 
+/** Strip legacy "Auto Mock · ..." prefix and prefer chapter/subject name. */
+function displayMockTitle(m: {
+  title: string;
+  chapters?: { name: string } | null;
+  subjects?: { name: string } | null;
+}): string {
+  const raw = (m.title ?? "").trim();
+  const isAuto = /^auto\s*mock\b/i.test(raw);
+  if (isAuto) {
+    return m.chapters?.name || m.subjects?.name || "Mock Test";
+  }
+  return raw || m.chapters?.name || m.subjects?.name || "Mock Test";
+}
+
 function fmtSeconds(s: number) {
   const mm = Math.floor(s / 60)
     .toString()
@@ -212,7 +226,7 @@ function BrowseStage({ onStart }: { onStart: (m: MockRow) => void }) {
         if (!search.trim()) return true;
         const q = search.toLowerCase();
         return (
-          m.title.toLowerCase().includes(q) ||
+          displayMockTitle(m).toLowerCase().includes(q) ||
           (m.subjects?.name ?? "").toLowerCase().includes(q) ||
           (m.chapters?.name ?? "").toLowerCase().includes(q)
         );
@@ -438,7 +452,7 @@ function MockCard({ mock, delay, onStart }: { mock: MockRow; delay: number; onSt
         </div>
 
         <h3 className="font-display mt-3 line-clamp-2 text-lg font-bold tracking-tight">
-          {mock.title}
+          {displayMockTitle(mock)}
         </h3>
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <span className="rounded-full bg-muted/60 px-2 py-0.5">{subjectName}</span>
@@ -741,7 +755,7 @@ function ExamStage({
             <Trophy className="h-5 w-5" />
           </div>
           <div>
-            <div className="font-display text-sm font-bold">{mock.title}</div>
+            <div className="font-display text-sm font-bold">{displayMockTitle(mock)}</div>
             <div className="text-xs text-muted-foreground">
               {mock.subjects?.name ?? "General"} · {cap(mock.level)}
             </div>
@@ -1018,7 +1032,7 @@ function ResultStage({
               )}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {mock.title} · {mock.subjects?.name ?? "General"}
+              {displayMockTitle(mock)} · {mock.subjects?.name ?? "General"}
             </p>
 
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">

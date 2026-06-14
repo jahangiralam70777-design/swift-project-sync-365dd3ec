@@ -560,14 +560,13 @@ export const adminAutoGenerateMock = createServerFn({ method: "POST" })
       const mcqIds = shuffle(picked.map((m) => m.id));
       const durationSeconds = data.durationMinutes * 60;
 
-      const stamp = new Date();
       const scopeLabel = `${subject.name} — ${chapter.name}`;
-      const title = `Auto Mock · ${scopeLabel} (${stamp.toLocaleDateString()} ${stamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})`;
+      const title = chapter.name;
 
       const insertPayload: Record<string, unknown> = {
         kind: "mock",
         title,
-        description: `Auto-generated from MCQ Practice Question Bank · ${mcqIds.length} questions from ${scopeLabel}.${
+        description: `${mcqIds.length} questions from ${scopeLabel}.${
           usedFallback
             ? " Some questions were added from related chapters because the selected chapter did not contain enough questions."
             : ""
