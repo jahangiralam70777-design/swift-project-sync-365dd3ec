@@ -549,9 +549,9 @@ export function QuizFlow() {
                           )}
                         </div>
                       </div>
-                      <h3 className="font-display mt-4 text-lg font-bold">{qz.title}</h3>
+                      <h3 className="font-display mt-4 text-lg font-bold">{displayQuizTitle(qz as never)}</h3>
                       <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                        {qz.description ?? "Tap to start"}
+                        {displayQuizSubtitle(qz as never)}
                       </p>
                       <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
                         <span>
