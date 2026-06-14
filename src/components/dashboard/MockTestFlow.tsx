@@ -69,6 +69,20 @@ function cap(s: string) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
 
+/** Strip legacy "Auto Mock · ..." prefix and prefer chapter/subject name. */
+function displayMockTitle(m: {
+  title: string;
+  chapters?: { name: string } | null;
+  subjects?: { name: string } | null;
+}): string {
+  const raw = (m.title ?? "").trim();
+  const isAuto = /^auto\s*mock\b/i.test(raw);
+  if (isAuto) {
+    return m.chapters?.name || m.subjects?.name || "Mock Test";
+  }
+  return raw || m.chapters?.name || m.subjects?.name || "Mock Test";
+}
+
 function fmtSeconds(s: number) {
   const mm = Math.floor(s / 60)
     .toString()
