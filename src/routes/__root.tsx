@@ -17,6 +17,7 @@ import { usePrefs } from "@/lib/profile-prefs";
 import { ThemeInjector } from "@/components/site/ThemeInjector";
 import { SingleSessionGuard } from "@/components/auth/SingleSessionGuard";
 import { SessionTimeoutGuard } from "@/components/auth/SessionTimeoutGuard";
+import { classifyError } from "@/lib/error-classify";
 import { ActivityTracker } from "@/components/tracking/ActivityTracker";
 import { RootErrorBoundary } from "@/components/RootErrorBoundary";
 import { installGlobalErrorReporter, reportError } from "@/lib/error-reporter";
