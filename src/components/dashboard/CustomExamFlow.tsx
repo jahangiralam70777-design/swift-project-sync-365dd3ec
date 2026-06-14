@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { sanitizeOptionText } from "@/lib/sanitize-option";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -265,6 +266,10 @@ export function CustomExamFlow() {
   // Submit to server — never compute correctness on the client.
   const submitExam = async () => {
     if (submitting || submitted) return;
+    if (examQs.length === 0) {
+      toast.error("No questions to submit.");
+      return;
+    }
     setSubmitting(true);
     try {
       const elapsed = Math.max(0, duration * 60 - timeLeft);
@@ -283,8 +288,12 @@ export function CustomExamFlow() {
       });
       setResult(r);
       setSubmitted(true);
+      toast.success(`Exam submitted! Score ${r?.score ?? 0}%`);
     } catch (e) {
       console.error("Custom exam submit failed", e);
+      const msg =
+        e instanceof Error ? e.message : "Failed to submit exam. Please try again.";
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }
