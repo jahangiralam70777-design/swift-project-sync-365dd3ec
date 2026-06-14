@@ -1099,26 +1099,26 @@ export function UserManagementFlow() {
                             )}
                           </div>
                         </td>
-                        <td className="px-3 py-3">
+                        <td className="px-3 py-3 align-middle whitespace-nowrap">
                           <div className="flex flex-wrap gap-1">
                             {(u.roleDisplays ?? u.roles).length === 0 && (
-                              <span className="text-[10px] text-muted-foreground">Student</span>
+                              <Badge variant="outline" className="rounded-full text-[10px]">Student</Badge>
                             )}
                             {(u.roleDisplays ?? u.roles).map((d, i) => (
                               <Badge
                                 key={i}
                                 variant="outline"
-                                className="rounded-full text-[10px] capitalize"
+                                className="rounded-full text-[10px] capitalize whitespace-nowrap"
                               >
                                 {d}
                               </Badge>
                             ))}
                           </div>
                         </td>
-                        <td className="px-3 py-3 text-muted-foreground capitalize">{u.level}</td>
-                        <td className="px-3 py-3">
+                        <td className="px-3 py-3 text-muted-foreground capitalize whitespace-nowrap align-middle">{u.level || "—"}</td>
+                        <td className="px-3 py-3 align-middle whitespace-nowrap">
                           <span
-                            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] capitalize ${STATUS_TONE[displayStatus]}`}
+                            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] capitalize whitespace-nowrap ${STATUS_TONE[displayStatus]}`}
                           >
                             <CircleDot className="mr-1 h-2 w-2" />
                             {displayStatus}
