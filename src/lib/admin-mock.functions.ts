@@ -560,7 +560,6 @@ export const adminAutoGenerateMock = createServerFn({ method: "POST" })
       const mcqIds = shuffle(picked.map((m) => m.id));
       const durationSeconds = data.durationMinutes * 60;
 
-      const stamp = new Date();
       const scopeLabel = `${subject.name} — ${chapter.name}`;
       const title = chapter.name;
 
