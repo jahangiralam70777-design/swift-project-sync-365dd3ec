@@ -802,28 +802,37 @@ export function StudyPlanPanel() {
         </div>
       </div>
       {!collapsed && (
-        <ul className="divide-y divide-border/40">
-          {tasks.map((t) => (
-            <li
-              key={t.id}
-              className="flex items-center gap-3 p-4 transition-colors hover:bg-background/40"
-            >
-              <button
-                onClick={() => toggle(t.id)}
-                aria-label="toggle"
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${t.done ? "border-emerald-500 bg-emerald-500 text-white" : "border-border"}`}
+        tasks.length === 0 ? (
+          <div className="p-6 text-center">
+            <p className="text-sm font-semibold text-foreground">No tasks yet</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Start using the practice, quiz, and notes modules — your day's plan will build up here as you go.
+            </p>
+          </div>
+        ) : (
+          <ul className="divide-y divide-border/40">
+            {tasks.map((t) => (
+              <li
+                key={t.id}
+                className="flex items-center gap-3 p-4 transition-colors hover:bg-background/40"
               >
-                {t.done && <CheckCircle2 className="h-3.5 w-3.5" />}
-              </button>
-              <p
-                className={`flex-1 text-sm ${t.done ? "text-muted-foreground line-through" : "font-semibold"}`}
-              >
-                {t.title}
-              </p>
-              <span className="text-[11px] text-muted-foreground">{t.tag}</span>
-            </li>
-          ))}
-        </ul>
+                <button
+                  onClick={() => toggle(t.id)}
+                  aria-label="toggle"
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${t.done ? "border-emerald-500 bg-emerald-500 text-white" : "border-border"}`}
+                >
+                  {t.done && <CheckCircle2 className="h-3.5 w-3.5" />}
+                </button>
+                <p
+                  className={`flex-1 text-sm ${t.done ? "text-muted-foreground line-through" : "font-semibold"}`}
+                >
+                  {t.title}
+                </p>
+                <span className="text-[11px] text-muted-foreground">{t.tag}</span>
+              </li>
+            ))}
+          </ul>
+        )
       )}
     </div>
   );
