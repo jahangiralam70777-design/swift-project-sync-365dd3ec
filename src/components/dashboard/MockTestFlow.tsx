@@ -226,7 +226,7 @@ function BrowseStage({ onStart }: { onStart: (m: MockRow) => void }) {
         if (!search.trim()) return true;
         const q = search.toLowerCase();
         return (
-          m.title.toLowerCase().includes(q) ||
+          displayMockTitle(m).toLowerCase().includes(q) ||
           (m.subjects?.name ?? "").toLowerCase().includes(q) ||
           (m.chapters?.name ?? "").toLowerCase().includes(q)
         );
