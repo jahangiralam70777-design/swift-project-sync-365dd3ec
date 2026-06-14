@@ -323,7 +323,7 @@ export const getQuiz = createServerFn({ method: "POST" })
       supabase
         .from("quizzes")
         .select(
-          "id,title,description,total_questions,duration_seconds,subject_id,chapter_id",
+          "id,title,description,total_questions,duration_seconds,subject_id,chapter_id,chapters(name)",
         )
         .eq("id", data.quizId)
         .single(),
