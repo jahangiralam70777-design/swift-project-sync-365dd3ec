@@ -455,6 +455,16 @@ export function UserManagementFlow() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const roleM = useMutation({
+    mutationFn: (v: { id: string; role: "admin" | "moderator" | "student"; grant: boolean }) =>
+      roleFn({ data: v }),
+    onSuccess: (_r, v) => {
+      toast.success(v.grant ? `${v.role} role granted` : `${v.role} role removed`);
+      invalidate();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const bulkVerify = useMutation({
     mutationFn: async () => {
       const ids = [...selected];
