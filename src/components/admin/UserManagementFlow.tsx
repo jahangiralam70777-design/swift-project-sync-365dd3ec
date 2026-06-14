@@ -186,6 +186,7 @@ export function UserManagementFlow() {
   const verifyFn = useServerFn(adminVerifyUser);
   const resetPwFn = useServerFn(adminSendPasswordReset);
   const userSessionsFn = useServerFn(adminUserSessions);
+  const roleFn = useServerFn(adminSetUserRole);
   const [showCreate, setShowCreate] = useState(false);
 
   const [search, setSearch] = useState("");
