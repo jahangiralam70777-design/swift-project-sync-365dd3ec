@@ -214,7 +214,7 @@ function Hero({
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-xl">
             <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              Good job, {name}! <span className="inline-block animate-pulse-glow">👋</span>
+              Welcome back, {name}! <span className="inline-block animate-pulse-glow">👋</span>
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-white/85">{motivation}</p>
             <div className="mt-5 flex flex-wrap gap-2">
