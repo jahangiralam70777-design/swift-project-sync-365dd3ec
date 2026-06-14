@@ -70,11 +70,20 @@ export const Route = createFileRoute("/blog/$slug")({
       ],
     };
   },
-  errorComponent: ({ error }) => (
-    <div className="p-10 text-center text-red-500">Failed to load post: {error.message}</div>
-  ),
+  errorComponent: ({ error, reset }) => <DefaultErrorFallback error={error} reset={reset} />,
   notFoundComponent: () => (
-    <div className="p-10 text-center text-muted-foreground">Post not found.</div>
+    <div className="px-6 py-16 text-center">
+      <h2 className="text-lg font-semibold text-foreground">We couldn't find this article</h2>
+      <p className="mt-2 text-sm text-muted-foreground">
+        The post may have been moved or unpublished. Browse the blog to find what you're looking for.
+      </p>
+      <Link
+        to="/blog"
+        className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+      >
+        Back to blog
+      </Link>
+    </div>
   ),
 });
 
