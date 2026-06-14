@@ -58,6 +58,28 @@ type LevelChoice = Omit<LevelRow, "icon"> & {
 
 const stepLabels = ["Level", "Subject", "Chapter", "Quiz", "Play"];
 
+/** Strip legacy "[Auto] " prefix and prefer chapter name from joined row. */
+function displayQuizTitle(qz: {
+  title?: string | null;
+  chapters?: { name?: string | null } | null;
+} | null | undefined): string {
+  if (!qz) return "Unnamed Chapter";
+  const chapter = qz.chapters?.name?.trim();
+  if (chapter) return chapter;
+  const t = (qz.title ?? "").replace(/^\s*\[Auto\]\s*/i, "").trim();
+  return t || "Unnamed Chapter";
+}
+
+/** Replace any "Auto-generated quiz from ..." description with a clean subtitle. */
+function displayQuizSubtitle(qz: {
+  description?: string | null;
+  chapters?: { name?: string | null } | null;
+} | null | undefined): string {
+  const d = (qz?.description ?? "").trim();
+  if (d && !/auto[-\s]?generated/i.test(d)) return d;
+  return "Chapter Quiz";
+}
+
 type QuizQ = {
   position: number;
   id: string;
