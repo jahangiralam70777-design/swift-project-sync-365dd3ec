@@ -1,5 +1,6 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, RefreshCw, Wifi, ShieldAlert, Search, Clock, LifeBuoy } from "lucide-react";
+import { classifyError, type ErrorKind } from "@/lib/error-classify";
 
 // Instant navigation: never render a pending fallback between routes.
 // Previous page stays on screen until the next route is ready (TanStack
@@ -12,16 +13,19 @@ export function DefaultNotFoundFallback() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h2 className="text-lg font-semibold text-foreground">Not found</h2>
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+          <Search className="h-6 w-6 text-muted-foreground" aria-hidden />
+        </div>
+        <h2 className="mt-4 text-lg font-semibold text-foreground">We couldn't find that page</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page or resource you're looking for doesn't exist.
+          The link may be broken or the page may have moved. Try heading back to the homepage.
         </p>
-        <div className="mt-4">
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            Go home
+            Go to homepage
           </Link>
         </div>
       </div>
@@ -29,23 +33,36 @@ export function DefaultNotFoundFallback() {
   );
 }
 
+const KIND_ICON: Record<ErrorKind, typeof AlertTriangle> = {
+  network: Wifi,
+  timeout: Clock,
+  auth: ShieldAlert,
+  notfound: Search,
+  ratelimit: Clock,
+  server: AlertTriangle,
+  unknown: AlertTriangle,
+};
+
 export function DefaultErrorFallback({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   if (typeof console !== "undefined") {
+    // Detailed log for the team; UI shows only the friendly message.
     console.error("[route-error]", error);
   }
-  const message =
-    error?.message?.includes("Unauthorized") || error?.message?.includes("permission denied")
-      ? "You don't have permission to view this. Ask an admin if you think this is a mistake."
-      : "Something went wrong loading this page. You can try again or head back home.";
+  const { kind, title, message } = classifyError(error, "section");
+  const Icon = KIND_ICON[kind];
 
   return (
-    <div className="flex min-h-[40vh] items-center justify-center px-4 py-10">
+    <div
+      role="alert"
+      aria-live="polite"
+      className="flex min-h-[40vh] items-center justify-center px-4 py-10"
+    >
       <div className="max-w-md text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
-          <AlertTriangle className="h-6 w-6 text-destructive" />
+          <Icon className="h-6 w-6 text-destructive" aria-hidden />
         </div>
-        <h2 className="mt-4 text-lg font-semibold text-foreground">This section didn't load</h2>
+        <h2 className="mt-4 text-lg font-semibold text-foreground">{title}</h2>
         <p className="mt-2 text-sm text-muted-foreground">{message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -53,9 +70,15 @@ export function DefaultErrorFallback({ error, reset }: { error: Error; reset: ()
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            Try again
+            <RefreshCw className="h-4 w-4" aria-hidden /> Try again
+          </button>
+          <button
+            onClick={() => router.history.back()}
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-accent"
+          >
+            Go back
           </button>
           <Link
             to="/"
@@ -63,6 +86,14 @@ export function DefaultErrorFallback({ error, reset }: { error: Error; reset: ()
           >
             Go home
           </Link>
+          {(kind === "server" || kind === "unknown") && (
+            <a
+              href="mailto:support@edumaster.app"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-accent"
+            >
+              <LifeBuoy className="h-4 w-4" aria-hidden /> Contact support
+            </a>
+          )}
         </div>
       </div>
     </div>

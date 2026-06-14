@@ -17,6 +17,7 @@ import { usePrefs } from "@/lib/profile-prefs";
 import { ThemeInjector } from "@/components/site/ThemeInjector";
 import { SingleSessionGuard } from "@/components/auth/SingleSessionGuard";
 import { SessionTimeoutGuard } from "@/components/auth/SessionTimeoutGuard";
+import { classifyError } from "@/lib/error-classify";
 import { ActivityTracker } from "@/components/tracking/ActivityTracker";
 import { RootErrorBoundary } from "@/components/RootErrorBoundary";
 import { installGlobalErrorReporter, reportError } from "@/lib/error-reporter";
@@ -80,15 +81,16 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     });
   }, [error]);
 
+  const { title, message, kind } = classifyError(error, "page");
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="flex min-h-dvh items-center justify-center bg-background px-4"
+    >
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">{title}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -99,12 +101,28 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           >
             Try again
           </button>
+          <button
+            onClick={() => {
+              if (typeof window !== "undefined") window.location.reload();
+            }}
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          >
+            Refresh page
+          </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
           </a>
+          {(kind === "server" || kind === "unknown") && (
+            <a
+              href="mailto:support@edumaster.app"
+              className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            >
+              Contact support
+            </a>
+          )}
         </div>
       </div>
     </div>
