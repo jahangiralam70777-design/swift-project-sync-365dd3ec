@@ -220,7 +220,7 @@ function Hero({
             <div className="mt-5 flex flex-wrap gap-2">
               <Link
                 to="/mcq-practice"
-                className="inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-foreground shadow-lg transition-transform hover:scale-[1.03]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black shadow-lg transition-transform hover:scale-[1.03]"
               >
                 Continue Practice
               </Link>
