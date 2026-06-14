@@ -328,7 +328,7 @@ export function QuizFlow() {
       best: Math.max(prev.best, a.score ?? 0),
     });
   }
-  const quizTitleById = new Map<string, string>(allQuizzes.map((q) => [q.id, q.title]));
+  const quizTitleById = new Map<string, string>(allQuizzes.map((q) => [q.id, displayQuizTitle(q as never)]));
   const recentAttempts = (attemptsQ.data ?? []).slice(0, 5);
 
   return (
